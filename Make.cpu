@@ -61,18 +61,18 @@ TOUCH        = touch
 # - Platform identifier ------------------------------------------------
 # ----------------------------------------------------------------------
 #
-ARCH         = Linux_PII_FBLAS
+ARCH         = cpu
 #
 # ----------------------------------------------------------------------
 # - HPL Directory Structure / HPL library ------------------------------
 # ----------------------------------------------------------------------
 #
-TOPdir       = $(HOME)/hpl
+TOPdir       = /home/asc13/yewei/hpl_cpu
 INCdir       = $(TOPdir)/include
 BINdir       = $(TOPdir)/bin/$(ARCH)
 LIBdir       = $(TOPdir)/lib/$(ARCH)
 #
-HPLlib       = $(LIBdir)/libhpl.a 
+HPLlib       = $(LIBdir)/libhpl.a
 #
 # ----------------------------------------------------------------------
 # - Message Passing library (MPI) --------------------------------------
@@ -81,9 +81,9 @@ HPLlib       = $(LIBdir)/libhpl.a
 # header files,  MPlib  is defined  to be the name of  the library to be
 # used. The variable MPdir is only used for defining MPinc and MPlib.
 #
-MPdir        = /usr/local/mpi
-MPinc        = -I$(MPdir)/include
-MPlib        = $(MPdir)/lib/libmpich.a
+#MPdir        = /opt/intel/impi/4.1.0
+#MPinc        = -I$(MPdir)/include64
+#MPlib        = $(MPdir)/lib/libmpich.so
 #
 # ----------------------------------------------------------------------
 # - Linear Algebra library (BLAS or VSIPL) -----------------------------
@@ -92,9 +92,15 @@ MPlib        = $(MPdir)/lib/libmpich.a
 # header files,  LAlib  is defined  to be the name of  the library to be
 # used. The variable LAdir is only used for defining LAinc and LAlib.
 #
-LAdir        = $(HOME)/netlib/ARCHIVES/Linux_PII
-LAinc        =
-LAlib        = $(LAdir)/libf77blas.a $(LAdir)/libatlas.a
+LAdir        = /opt/intel
+LAinc        = $(LAdir)/mkl/include
+LAlib        = -L$(LAdir)/mkl/lib/intel64 \
+               -Wl,--start-group \
+                   $(LAdir)/mkl/lib/intel64/libmkl_intel_lp64.a \
+                   $(LAdir)/mkl/lib/intel64/libmkl_sequential.a \
+                   $(LAdir)/mkl/lib/intel64/libmkl_core.a \
+               -Wl,--end-group \
+               -ldl
 #
 # ----------------------------------------------------------------------
 # - F77 / C interface --------------------------------------------------
@@ -141,7 +147,7 @@ F2CDEFS      = -DAdd__ -DF77_INTEGER=int -DStringSunStyle
 # - HPL includes / libraries / specifics -------------------------------
 # ----------------------------------------------------------------------
 #
-HPL_INCLUDES = -I$(INCdir) -I$(INCdir)/$(ARCH) $(LAinc) $(MPinc)
+HPL_INCLUDES = -I$(INCdir) -I$(INCdir)/$(ARCH) -I$(LAinc) $(MPinc)
 HPL_LIBS     = $(HPLlib) $(LAlib) $(MPlib)
 #
 # - Compile time options -----------------------------------------------
@@ -156,7 +162,7 @@ HPL_LIBS     = $(HPLlib) $(LAlib) $(MPlib)
 #    *) call the BLAS Fortran 77 interface,
 #    *) not display detailed timing information.
 #
-HPL_OPTS     =
+HPL_OPTS     = -DASYOUGO
 #
 # ----------------------------------------------------------------------
 #
@@ -166,15 +172,16 @@ HPL_DEFS     = $(F2CDEFS) $(HPL_OPTS) $(HPL_INCLUDES)
 # - Compilers / linkers - Optimization flags ---------------------------
 # ----------------------------------------------------------------------
 #
-CC           = /usr/bin/gcc
-CCNOOPT      = $(HPL_DEFS)
-CCFLAGS      = $(HPL_DEFS) -fomit-frame-pointer -O3 -funroll-loops -W -Wall
+CC           = mpiicc
+CCNOOPT      = $(HPL_DEFS) -O0 -w -nocompchk
+CCFLAGS      = $(HPL_DEFS) -O3 -axP -w -nocompchk 
 #
 # On some platforms,  it is necessary  to use the Fortran linker to find
 # the Fortran internals used in the BLAS library.
 #
-LINKER       = /usr/bin/g77
-LINKFLAGS    = $(CCFLAGS)
+STATICFLAG=-i-static -z noexecstack -z relro -z now -static_mpi
+LINKER       = $(CC)
+LINKFLAGS    = $(CCFLAGS) -nocompchk $(STATICFLAG)
 #
 ARCHIVER     = ar
 ARFLAGS      = r
