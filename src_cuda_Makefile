@@ -35,7 +35,9 @@ all : libdgemm.so.1.0.1
 fermi_dgemm.o : fermi_dgemm.c fermi_dgemm.h helper_nvcc.cubin_bits.h dgemm_kernels_sass.cubin_bits.h
 
 DEFINES = -DMPI
+#DEFINES += -DUSE_FERMI_DGEMM
 #DEFINES += -DVERBOSE_PRINT
+#DEFINES += -DACML
 #DEFINES += -DGOTO
 
 %.o: %.c

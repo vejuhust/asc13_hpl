@@ -101,7 +101,7 @@ ARCH         = CUDA
 #
 # Set TOPdir to the location of where this is being built
 ifndef  TOPdir
-TOPdir = /home/mfatica/hpl-2.0_FERMI_v13
+TOPdir = /home/mfatica/hpl-2.0_FERMI_v15
 endif
 INCdir       = $(TOPdir)/include
 BINdir       = $(TOPdir)/bin/$(ARCH)
@@ -210,10 +210,10 @@ HPL_DEFS     = $(F2CDEFS) $(HPL_OPTS) $(HPL_INCLUDES)
 #
 # next two lines for GNU Compilers:
 CC      = mpicc
-#CCFLAGS = $(HPL_DEFS) -fomit-frame-pointer -O3 -funroll-loops -W -Wall -fopenmp
+CCFLAGS = $(HPL_DEFS) -fomit-frame-pointer -O3 -funroll-loops -W -Wall -fopenmp
 # next two lines for Intel Compilers:
-#   CC      = mpicc
-CCFLAGS = $(HPL_DEFS) -O3 -axS -w -fomit-frame-pointer -funroll-loops -openmp 
+# CC      = mpicc
+# CCFLAGS = $(HPL_DEFS) -O3 -axS -w -fomit-frame-pointer -funroll-loops -openmp 
 #
 CCNOOPT      = $(HPL_DEFS) -O0 -w
 #
