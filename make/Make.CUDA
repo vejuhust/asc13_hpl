@@ -100,9 +100,8 @@ ARCH         = CUDA
 # ----------------------------------------------------------------------
 #
 # Set TOPdir to the location of where this is being built
-TOPdir = /root/yewei/hpl_cuda
 ifndef  TOPdir
-TOPdir = `pwd` 
+TOPdir = /home/mfatica/hpl-2.0_FERMI_v15
 endif
 INCdir       = $(TOPdir)/include
 BINdir       = $(TOPdir)/bin/$(ARCH)
@@ -117,9 +116,9 @@ HPLlib       = $(LIBdir)/libhpl.a
 # header files,  MPlib  is defined  to be the name of  the library to be
 # used. The variable MPdir is only used for defining MPinc and MPlib.
 #
-MPdir        = /usr/local/openmpi-1.6.4
-MPinc        = -I$(MPdir)/include
-MPlib        = $(MPdir)/lib/libmpi.so
+#MPdir        = /opt/intel/mpi/3.0
+#MPinc        = -I$(MPdir)/include64
+#MPlib        = $(MPdir)/lib64/libmpi.a
 #MPlib        = $(MPdir)/lib64/libmpich.a
 #
 # ----------------------------------------------------------------------
@@ -130,8 +129,8 @@ MPlib        = $(MPdir)/lib/libmpi.so
 # used. The variable LAdir is only used for defining LAinc and LAlib.
 #
 #LAdir        = $(TOPdir)/../../lib/em64t
-LAdir        = /opt/intel/mkl/lib/intel64 
-LAinc        = -I /usr/local/cuda/include 
+LAdir        = /share/apps/intel/mkl/10.2.4.032/libem64t
+LAinc        =
 # CUDA
 #LAlib        = -L /home/cuda/Fortran_Cuda_Blas  -ldgemm -L/usr/local/cuda/lib -lcublas  -L$(LAdir) -lmkl -lguide -lpthread
 LAlib        = -L $(TOPdir)/src/cuda  -ldgemm -L/usr/local/cuda/lib64 -lcuda -lcudart -lcublas -L$(LAdir) -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -liomp5
@@ -210,10 +209,10 @@ HPL_DEFS     = $(F2CDEFS) $(HPL_OPTS) $(HPL_INCLUDES)
 # ----------------------------------------------------------------------
 #
 # next two lines for GNU Compilers:
-CC = /usr/local/openmpi-1.6.4/bin/mpicc
+CC      = mpicc
 CCFLAGS = $(HPL_DEFS) -fomit-frame-pointer -O3 -funroll-loops -W -Wall -fopenmp
 # next two lines for Intel Compilers:
-# CC      = /opt/intel/impi/4.1.0/bin64/mpiicc -opt-malloc-options=1
+# CC      = mpicc
 # CCFLAGS = $(HPL_DEFS) -O3 -axS -w -fomit-frame-pointer -funroll-loops -openmp 
 #
 CCNOOPT      = $(HPL_DEFS) -O0 -w
