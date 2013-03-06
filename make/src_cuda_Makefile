@@ -27,6 +27,8 @@
 all: libdgemm.so.1.0.1
 
 OBJS = cuda_dgemm.o fermi_dgemm.o
+MPICC = /usr/local/openmpi-1.6.4/bin/mpicc
+#MPICC = /opt/intel/impi/4.1.0/bin64/mpicc
 
 .PRECIOUS: $(OBJS)
 
@@ -41,11 +43,11 @@ DEFINES = -DMPI
 #DEFINES += -DGOTO
 
 %.o: %.c
-	mpicc -O0 -c -fPIC $(DEFINES) $*.c -o $*.o -I/usr/local/cuda/include
+	$(MPICC) -O0 -c -fPIC $(DEFINES) $*.c -o $*.o -I/usr/local/cuda/include
 
 libdgemm.so.1.0.1: $(OBJS)
 
-	mpicc -O3 -shared -Wl,-soname,libdgemm.so.1 -o libdgemm.so.1.0.1 $(OBJS) -L/usr/local/cuda/lib64 -lcudart -lcuda
+	$(MPICC) -O3 -shared -Wl,-soname,libdgemm.so.1 -o libdgemm.so.1.0.1 $(OBJS) -L/usr/local/cuda/lib64 -lcudart -lcuda
 	ln -sf libdgemm.so.1.0.1 libdgemm.so.1.0
 	ln -sf libdgemm.so.1.0 libdgemm.so.1
 	ln -sf libdgemm.so.1 libdgemm.so
